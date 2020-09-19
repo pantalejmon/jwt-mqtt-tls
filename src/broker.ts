@@ -1,5 +1,5 @@
 import aedes, {Aedes, AedesPublishPacket, Client, Subscription} from 'aedes';
-import net from 'net';
+import tls, {TlsOptions} from 'tls';
 import {ClientToken} from "./clientToken";
 import {KeycloakConfig} from "./keycloakConfig";
 
@@ -14,10 +14,10 @@ export class Broker {
     private keycloak;
     private tokens: Array<ClientToken> = [];
 
-    constructor(port: number, config: KeycloakConfig) {
+    constructor(port: number, config: KeycloakConfig, options: TlsOptions) {
         this.keycloak = require('keycloak-backend')(config);
-        this.server = net.createServer(this.aedes.handle);
-        this.server.listen(port, () => console.log(`[INFO] JWT-MQTT server starts on port: ${port}`));
+        this.server = tls.createServer(options,this.aedes.handle);
+        this.server.listen(port, () => console.log(`[INFO] JWT-MQTT-TLS server starts on port: ${port}`));
     }
 
     async checkToken(client: Client, data: AedesPublishPacket, callback) {

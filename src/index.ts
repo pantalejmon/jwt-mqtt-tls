@@ -1,5 +1,6 @@
 import {Broker} from "./broker";
 import {KeycloakConfig} from "./keycloakConfig";
+import * as fs from "fs";
 
 const config: KeycloakConfig = {
     "realm": "mqtt",
@@ -10,6 +11,11 @@ const config: KeycloakConfig = {
     "password": "admin"
 };
 
-const broker = new Broker(1883, config);
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+}
+
+const broker = new Broker(8883, config, options);
 
 
